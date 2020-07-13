@@ -4,5 +4,11 @@
         "MONGODB_HOST": "127.0.0.1",
         "MONGODB_DB_NAME": "myDatabase",
         "COLLECTIONS": ["users", "admin"]
+    },
+    "SQL":
+    {
+        "SQL_HOST": "host",
+        "SQL_DB_NAME": "name",
+        "TABLES": ["users", "admin"]
     }
 }
