@@ -1,5 +1,5 @@
 import pymongo
-from DBs import read_config
+from Kingfish.DBs import read_config
 
 mongo_section = read_config()["MONGODB"]
 
@@ -34,16 +34,23 @@ def find_documents(value = None):
                 relevant_docs.append(document)
     return relevant_docs
 
-def convert_json_to_table(value = None):
-    sql_commands = []
-    for document in find_documents(value):
-        columns = ', '.join("`" str(val).replace('/', '_') + "`" for val in document.keys())
-        values = ', '.join("'" + str(val).replace('/', '_') + "'" for val in document.values())
-        sql_command = f"INSERT INTO {TABLE_NAME} ({columns}) VALUES ({values});"
-        sql_commands.append(sql_command)
-        
+def create_document(**data):
+    document = {}
+    for key in data.keys():
+        document[str(key)] = data.get(key)
+    return document
 
-    
+def insert_to_mongodb(collection_name, **data):
+    if not IS_CONNECTED:
+        connect_to_mongodb()
+    collection = data_base[collection_name]
+    document = {}
+    for key in data.keys():
+        document[str(key)] = data.get(key)
+    collection.insert_one(document)
+    print("Inserted Successfully")
+        
 if __name__ == '__main__':
     get_collection()
     find_documents()
+    insert_to_mongodb("users", dada = "dsdsdsdsds", dsdsddsds = "ppppppppp")
