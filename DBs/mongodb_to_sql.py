@@ -16,6 +16,7 @@ def connect_to_mongodb(mongodb_host = DEFAULT_MONGODB_HOST, mongodb_db_name = DE
     client = pymongo.MongoClient(mongodb_host, 27017)
     data_base = client[mongodb_db_name]
     IS_CONNECTED = True
+    return IS_CONNECTED
 
 def get_collection():
     global collections
