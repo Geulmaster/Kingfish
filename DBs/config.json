@@ -7,6 +7,8 @@
     },
     "SQL":
     {
+        "USERNAME": "USER",
+        "PASSWORD": "PASS",
         "SQL_HOST": "host",
         "SQL_DB_NAME": "name",
         "TABLES": ["users", "admin"]
