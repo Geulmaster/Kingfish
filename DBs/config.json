@@ -10,6 +10,7 @@
         "USERNAME": "USER",
         "PASSWORD": "PASS",
         "SQL_HOST": "host",
+        "PORT": "5432",
         "SQL_DB_NAME": "name",
         "TABLES": ["users", "admin"]
     }
