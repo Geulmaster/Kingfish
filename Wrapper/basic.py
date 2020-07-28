@@ -1,7 +1,10 @@
-#conf = settings()
+from Wrapper import read_config
+
+config = read_config()
+
+array = config["VALUES_LIST"]
 
 def manipulator(func):
-    array = [32, 32, 3, 33,1] #temp!!!!!!!
     value = func(array)
     print(f"{func.__name__} is {value}")
 
