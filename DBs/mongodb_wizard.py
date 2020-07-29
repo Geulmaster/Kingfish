@@ -1,5 +1,5 @@
 import pymongo
-from DBs import read_config
+from Kingfish.DBs import read_config
 
 mongo_section = read_config()["MONGODB"]
 
@@ -33,7 +33,24 @@ def find_documents(value = None):
                 print(document)
                 relevant_docs.append(document)
     return relevant_docs
-    
+
+def create_document(**data):
+    document = {}
+    for key in data.keys():
+        document[str(key)] = data.get(key)
+    return document
+
+def insert_to_mongodb(collection_name, **data):
+    if not IS_CONNECTED:
+        connect_to_mongodb()
+    collection = data_base[collection_name]
+    document = {}
+    for key in data.keys():
+        document[str(key)] = data.get(key)
+    collection.insert_one(document)
+    print("Inserted Successfully")
+        
 if __name__ == '__main__':
     get_collection()
     find_documents()
+    insert_to_mongodb("users", dada = "dsdsdsdsds", dsdsddsds = "ppppppppp")
