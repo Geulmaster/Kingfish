@@ -1,5 +1,4 @@
 # Kingfish
-Bunch of scripts
 
 **DBs:**
 mongodb_wizard:
@@ -14,3 +13,9 @@ sql_wizard:
 --connect_to_db
 --run_query
 --insert_row
+
+**Core**
+
+**Wrapper**
+
+**Special**
