@@ -32,3 +32,8 @@ def clear_logs_file():
     logs_file = open(logs_filename, 'w')
     logs_file.close()
     print("Logs file has been cleared!")
+
+def display_logs_file():
+    with open(logs_filename, 'r', encoding='utf-8') as logs_file:
+        data = logs_file.read()
+    print(data)
