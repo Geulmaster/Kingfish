@@ -1,5 +1,6 @@
 import pymongo
 from Kingfish.DBs import read_config
+import Core.logger as logger
 
 mongo_section = read_config()["MONGODB"]
 
@@ -11,7 +12,7 @@ IS_CONNECTED = False
 collections = []
 
 def connect_to_mongodb(mongodb_host = DEFAULT_MONGODB_HOST, mongodb_db_name = DEFAULT_MONGODB_DB_NAME):
-    global data_base
+    global data_base, IS_CONNECTED
     print(f"hostname is {mongodb_host} and the DB name is {mongodb_db_name}")
     client = pymongo.MongoClient(mongodb_host, 27017)
     data_base = client[mongodb_db_name]
@@ -23,7 +24,8 @@ def get_collection():
     if not IS_CONNECTED:
         connect_to_mongodb()
     for collection in mongo_section["COLLECTIONS"]:
-        collections.append(data_base[collection])
+        collections.append(data_base[collection]) #cursor
+    return IS_CONNECTED
 
 def find_documents(value = None):
     relevant_docs = []
@@ -40,17 +42,20 @@ def create_document(**data):
         document[str(key)] = data.get(key)
     return document
 
-def insert_to_mongodb(collection_name, **data):
+def insert_to_mongodb(collection_name, doc = None, **data):
     if not IS_CONNECTED:
         connect_to_mongodb()
     collection = data_base[collection_name]
-    document = {}
-    for key in data.keys():
-        document[str(key)] = data.get(key)
-    collection.insert_one(document)
-    print("Inserted Successfully")
+    if doc:
+        collection.insert_one(doc)
+        logger.info("Inserted successfully the document")
+    else:
+        document = {}
+        for key in data.keys():
+            document[str(key)] = data.get(key)
+        collection.insert_one(document)
+        logger.info("Inserted successfully the dictionary")
         
 if __name__ == '__main__':
     get_collection()
-    find_documents()
-    insert_to_mongodb("users", dada = "dsdsdsdsds", dsdsddsds = "ppppppppp")
+    insert_to_mongodb("users", data = "dfsdfsdds", dsdsd = "dsds")
