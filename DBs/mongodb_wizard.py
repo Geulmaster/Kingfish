@@ -27,11 +27,14 @@ def get_collection():
         collections.append(data_base[collection]) #cursor
     return IS_CONNECTED
 
-def find_documents(value = None):
+def find_documents(value = None, key = None):
     relevant_docs = []
     for col in collections:
         for document in col.find():
             if value in document.values():
+                print(document)
+                relevant_docs.append(document)
+            elif key in document.keys():
                 print(document)
                 relevant_docs.append(document)
     return relevant_docs
@@ -59,3 +62,4 @@ def insert_to_mongodb(collection_name, doc = None, **data):
 if __name__ == '__main__':
     get_collection()
     insert_to_mongodb("users", data = "dfsdfsdds", dsdsd = "dsds")
+    find_documents(key="name")
