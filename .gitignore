@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 __pycache__
 .vscode
+dist
+Kingfisg.egg-info
+build
