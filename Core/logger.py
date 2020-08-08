@@ -4,11 +4,16 @@ Usage: from Kingfish.Core import logger
 """
 import logging
 from platform import platform
+from pathlib import Path
+import os
 
 if "linux" in platform().lower():
-    logs_filename = '/opt/logs/logs_file.log'
+    create_path_to_logs_file = Path('/opt/logs').mkdir(parents=True, exist_ok=True)
+    path_to_logs_file = '/opt/logs'
 elif "windows" in platform().lower():
-    logs_filename = 'C:/Users/eyalg/logs/logs_file.log'
+    create_path_to_logs_file = Path('C:/Kingfish/logs').mkdir(parents=True, exist_ok=True)
+    path_to_logs_file = 'C:/Kingfish/logs'
+logs_filename = os.path.join(path_to_logs_file, 'logs_file.log')
 
 logging.basicConfig(filename=logs_filename, level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s') #DEBUG level is 10
 
