@@ -6,7 +6,7 @@ README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="Kingfish",
-    version="0.0.7",
+    version="0.1.1",
     description="My first published package",
     long_description=README,
     long_description_content_type="text/markdown",
