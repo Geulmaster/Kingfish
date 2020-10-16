@@ -13,5 +13,18 @@ class Car:
     year: int
     color: str
 
-"""Example:"""
-"""contact = Contact("test","test@test.com","00 00 00 00")"""
+"""
+Example:
+contact = Contact("test","test@test.com","00 00 00 00")
+"""
+
+from collections import namedtuple
+
+Point = namedtuple('Point', ["x", "y"])
+p = Point(11, 22)
+
+"""
+Examples:
+p.x + p.y = 33
+p[0] + p[1] = 33
+"""
