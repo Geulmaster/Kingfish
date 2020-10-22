@@ -7,15 +7,19 @@ from platform import platform
 from pathlib import Path
 import os
 
-if "linux" in platform().lower():
-    create_path_to_logs_file = Path('/opt/logs').mkdir(parents=True, exist_ok=True)
-    path_to_logs_file = '/opt/logs'
-elif "windows" in platform().lower():
-    create_path_to_logs_file = Path('C:/Kingfish/logs').mkdir(parents=True, exist_ok=True)
-    path_to_logs_file = 'C:/Kingfish/logs'
-logs_filename = os.path.join(path_to_logs_file, 'logs_file.log')
+def logs_file_path():
+    if "linux" in platform().lower():
+        create_path_to_logs_file = Path('/opt/logs').mkdir(parents=True, exist_ok=True)
+        path_to_logs_file = '/opt/logs'
+    elif "windows" in platform().lower():
+        create_path_to_logs_file = Path('C:/Kingfish/logs').mkdir(parents=True, exist_ok=True)
+        path_to_logs_file = 'C:/Kingfish/logs'
+    logs_full_filename = os.path.join(path_to_logs_file, 'logs_file.log')
+    return logs_full_filename
 
-logging.basicConfig(filename=logs_filename, level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s') #DEBUG level is 10
+logs_filename = logs_file_path()
+
+config = logging.basicConfig(filename=logs_filename, level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s') #DEBUG level is 10
 
 def debug(msg: str):
     logging.debug(msg)
