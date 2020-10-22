@@ -30,7 +30,7 @@ def info(msg: str):
     print(f"-i- {msg} -i-")
 
 def warn(msg: str):
-    logging.warn(msg)
+    logging.warning(msg)
     print(f"-!- {msg} -!-")
 
 def fatal(msg: str):
