@@ -2,3 +2,4 @@ pymongo
 paramiko
 psycopg2
 pytest
+coloredlogs
