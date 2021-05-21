@@ -1,5 +1,6 @@
 import pymongo
-from Kingfish.DBs import read_config
+import atexit
+from Kingfish.DBs.configuration import read_config
 import Core.logger as logger
 
 mongo_section = read_config()["MONGODB"]
@@ -7,59 +8,89 @@ mongo_section = read_config()["MONGODB"]
 DEFAULT_MONGODB_HOST = mongo_section["MONGODB_HOST"]
 DEFAULT_MONGODB_DB_NAME = mongo_section["MONGODB_DB_NAME"]
 
-data_base = None
-IS_CONNECTED = False
-collections = []
+class MongoDB:
 
-def connect_to_mongodb(mongodb_host = DEFAULT_MONGODB_HOST, mongodb_db_name = DEFAULT_MONGODB_DB_NAME):
-    global data_base, IS_CONNECTED
-    print(f"hostname is {mongodb_host} and the DB name is {mongodb_db_name}")
-    client = pymongo.MongoClient(mongodb_host, 27017)
-    data_base = client[mongodb_db_name]
-    IS_CONNECTED = True
-    return IS_CONNECTED
+    def __init__(self, mongodb_host=DEFAULT_MONGODB_HOST, mongodb_db_name=DEFAULT_MONGODB_DB_NAME):
+        self.mongodb_host = mongodb_host
+        self.mongodb_db_name = mongodb_db_name
+        self.data_base = None
+        self.client = None
+        self.IS_CONNECTED = False
+        self.collections_names = mongo_section["COLLECTIONS"]
+        self.collections = []
 
-def get_collection():
-    global collections
-    if not IS_CONNECTED:
-        connect_to_mongodb()
-    for collection in mongo_section["COLLECTIONS"]:
-        collections.append(data_base[collection]) #cursor
-    return IS_CONNECTED
+    def connect_to_mongodb(self):
+        print(f"hostname is {self.mongodb_host} and the DB name is {self.mongodb_db_name}")
+        client = pymongo.MongoClient(self.mongodb_host, 27017)
+        self.data_base = client[self.mongodb_db_name]
+        self.IS_CONNECTED = True
 
-def find_documents(value = None, key = None):
-    relevant_docs = []
-    for col in collections:
-        for document in col.find():
-            if value in document.values():
-                print(document)
-                relevant_docs.append(document)
-            elif key in document.keys():
-                print(document)
-                relevant_docs.append(document)
-    return relevant_docs
+    def get_collection(self):
+        if not self.IS_CONNECTED:
+            self.connect_to_mongodb()
+        for collection in self.collections_names:
+            self.collections.append(self.data_base[collection]) #cursor
 
-def create_document(**data):
-    document = {}
-    for key in data.keys():
-        document[str(key)] = data.get(key)
-    return document
+    def find_documents(self, key = None, value = None):
+        if not self.IS_CONNECTED:
+            self.get_collection()
+        if not key and not value:
+            cross_collecions_documents = []
+            for col in self.collections:
+                arr = [document for document in col.find()]
+                cross_collecions_documents.append(arr) if len(arr) > 0 else None
+            print(cross_collecions_documents)
+            return cross_collecions_documents
+        relevant_docs = []
+        for col in self.collections:
+            for document in col.find():
+                if value in document.values():
+                    print(document)
+                    relevant_docs.append(document)
+                elif key in document.keys():
+                    print(document)
+                    relevant_docs.append(document)
+        if len(relevant_docs) == 0:
+            print("Didn't find relevant documents")
+        return relevant_docs
 
-def insert_to_mongodb(collection_name, doc = None, **data):
-    if not IS_CONNECTED:
-        connect_to_mongodb()
-    collection = data_base[collection_name]
-    if doc:
-        collection.insert_one(doc)
-        logger.info("Inserted successfully the document")
-    else:
+    def create_document(self, **data):
         document = {}
         for key in data.keys():
             document[str(key)] = data.get(key)
-        collection.insert_one(document)
-        logger.info("Inserted successfully the dictionary")
-        
-if __name__ == '__main__':
-    get_collection()
-    insert_to_mongodb("users", data = "dfsdfsdds", dsdsd = "dsds")
-    find_documents(key="name")
+        return document
+
+    def insert_to_mongodb(self, collection_name, doc = None, **data):
+        if not self.IS_CONNECTED:
+            self.connect_to_mongodb()
+        collection = self.data_base[collection_name]
+        if doc:
+            collection.insert_one(doc)
+            logger.info("Inserted successfully the document")
+        else:
+            document = {}
+            for key in data.keys():
+                document[str(key)] = data.get(key)
+            collection.insert_one(document)
+            logger.info("Inserted successfully the dictionary")
+
+    def edit_document(self):
+        pass
+
+    def edit_documet(self):
+        pass
+
+    def create_collection(self):
+        pass
+
+    def close_session(self):
+        self.client.close()
+        print("Session closed")
+
+"""
+***Running example:***
+
+instance = MongoDB()
+instance.find_documents()
+
+"""
