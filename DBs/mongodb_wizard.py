@@ -24,6 +24,7 @@ class MongoDB:
         client = pymongo.MongoClient(self.mongodb_host, 27017)
         self.data_base = client[self.mongodb_db_name]
         self.IS_CONNECTED = True
+        return self.data_base
 
     def get_collection(self):
         if not self.IS_CONNECTED:
@@ -74,21 +75,49 @@ class MongoDB:
             collection.insert_one(document)
             logger.info("Inserted successfully the dictionary")
 
-    def edit_document(self):
-        pass
+    def find_document(self, collection_name, key, value):
+        db = self.connect_to_mongodb()
+        collection = db[collection_name]
+        document = collection.find_one({key:value})
+        print(document)
+        return document
 
-    def edit_documet(self):
-        pass
+    def delete_document(self, collection_name, key, value):
+        db = self.connect_to_mongodb()
+        collection = db[collection_name]
+        collection.delete_one({key:value})
 
-    def create_collection(self):
-        pass
+    def edit_document(self, collection_name, key, value,
+     new_key = None, new_value = None):
+        document = self.find_document(collection_name, key, value)
+        if new_key:
+            document.pop(key)
+            document[new_key] = value
+            old_key = key
+            key = new_key
+        if new_value:
+            document[key] = new_value
+        self.delete_document(collection_name, old_key, value)
+        self.insert_to_mongodb(collection_name, doc = document)
+        logger.info("Successfully updated the document")
 
+    def create_collection(self, collection_name):
+        if not self.IS_CONNECTED:
+            self.connect_to_mongodb()
+        new_collection = self.data_base[collection_name]
+        collections = self.data_base.list_collection_names()
+        if collection_name in collections:
+            logger.info(f"Successfully creted {new_collection} in {self.data_base}")
+            return True
+        else:
+            logger.fatal(f"Created empty collection named {collection_name}")
+        
     def close_session(self):
         self.client.close()
         print("Session closed")
 
 """
-***Running example:***
+***Running examples:***
 
 instance = MongoDB()
 instance.find_documents()
