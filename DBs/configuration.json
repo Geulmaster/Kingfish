@@ -1,0 +1,22 @@
+{
+    "MONGODB":
+    {
+        "MONGODB_HOST": "127.0.0.1",
+        "MONGODB_DB_NAME": "myDatabase",
+        "COLLECTIONS": ["users", "admin"]
+    },
+    "SQL":
+    {
+        "USERNAME": "USER",
+        "PASSWORD": "PASS",
+        "SQL_HOST": "host",
+        "PORT": "5432",
+        "SQL_DB_NAME": "name",
+        "TABLES": ["users", "admin"]
+    },
+    "COUCHDB": {
+        "HOST": "",
+        "USERNAME": "admin",
+        "PASSWORD": ""
+    }
+}
