@@ -8,12 +8,21 @@ class CouchDB:
         self.db = self.couch[db_name]
         print(self.db)
 
-    def create_document(self, db_name, document:dict):
+    def create_document(self, document:dict, db_name = None):
         if not self.db:
             self.db = db_name
         self.db.save(document)
 
-    def create_db(self):
+    def update_document(self, doc_id, document, db_name = None):
+        if not self.db:
+            self.db = db_name
+        new_doc = self.db.get(doc_id)
+        for key in document.keys():
+            new_doc[key] = document[key]
+        new_doc = self.db.save(new_doc)
+        print(f"{new_doc} successfully saved")
+
+    def create_db(self, db_name = None):
         self.db = self.couch.create(db_name)
         return True
 
@@ -41,4 +50,4 @@ class CouchDB:
 
 if __name__ == "__main__":
     credentials = read_config()["COUCHDB"]
-    couch_instance = CouchDB(credentials["HOST"], credentials["USERNAME"], credentials["PASSWORD"])
+    couch_instance = CouchDB(credentials["HOST"], credentials["USERNAME"], credentials["PASSWORD"], db_name = "non_part")
